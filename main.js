@@ -334,7 +334,7 @@ let currentStoryKey = null;
 let currentSlideIndex = 0;
 let storyTimer = null;
 let isPaused = false;
-const STORY_DURATION = 6000;
+const STORY_DURATION = 10000;
 
 function openStory(storyKey) {
     const story = storyData[storyKey];
@@ -348,7 +348,7 @@ function openStory(storyKey) {
 }
 
 function closeStory() {
-    clearInterval(storyTimer);
+    clearTimeout(storyTimer);
     storyTimer = null;
     document.getElementById('storyModal').classList.remove('active');
     document.body.style.overflow = '';
@@ -413,25 +413,27 @@ function navigateStory(direction) {
 }
 
 function startStoryTimer() {
-    clearInterval(storyTimer);
+    clearTimeout(storyTimer);
     if (isPaused) return;
-    storyTimer = setInterval(() => navigateStory(1), STORY_DURATION);
+    storyTimer = setTimeout(() => navigateStory(1), STORY_DURATION);
 }
 
 function pauseStory() {
     isPaused = true;
-    clearInterval(storyTimer);
+    clearTimeout(storyTimer);
     const activeFill = document.querySelector('.story-progress-segment.active .story-progress-segment-fill');
     if (activeFill) activeFill.style.animationPlayState = 'paused';
 }
 
 function resumeStory() {
+    if (!isPaused) return;
     isPaused = false;
     const activeFill = document.querySelector('.story-progress-segment.active .story-progress-segment-fill');
     if (activeFill) {
         activeFill.style.animationPlayState = 'running';
         const remainingTime = STORY_DURATION * (1 - activeFill.offsetWidth / activeFill.parentElement.offsetWidth);
-        storyTimer = setInterval(() => navigateStory(1), remainingTime);
+        clearTimeout(storyTimer);
+        storyTimer = setTimeout(() => navigateStory(1), Math.max(0, remainingTime));
     } else {
         startStoryTimer();
     }
@@ -578,17 +580,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Hold to pause listeners */
     const storyContainer = document.querySelector('.story-modal-container');
-    storyContainer.addEventListener('mousedown', (e) => {
+    
+    const onStart = (e) => {
         if (e.target.closest('.story-nav') || e.target.closest('.story-modal-close')) return;
+        if (e.type === 'touchstart') e.preventDefault();
         pauseStory();
-    });
-    storyContainer.addEventListener('mouseup', resumeStory);
-    storyContainer.addEventListener('mouseleave', resumeStory);
-    storyContainer.addEventListener('touchstart', (e) => {
-        if (e.target.closest('.story-nav') || e.target.closest('.story-modal-close')) return;
-        pauseStory();
-    }, { passive: true });
-    storyContainer.addEventListener('touchend', resumeStory, { passive: true });
+    };
+
+    const onEnd = (e) => {
+        if (e.type === 'touchend') e.preventDefault();
+        resumeStory();
+    };
+
+    storyContainer.addEventListener('mousedown', onStart);
+    storyContainer.addEventListener('mouseup', onEnd);
+    storyContainer.addEventListener('mouseleave', onEnd);
+    storyContainer.addEventListener('touchstart', onStart, { passive: false });
+    storyContainer.addEventListener('touchend', onEnd, { passive: false });
 
     document
         .querySelector('.fab')

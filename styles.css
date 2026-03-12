@@ -1857,7 +1857,7 @@ footer {
     height: 100%;
     background: #fff;
     border-radius: 3px;
-    animation: storyProgress 6s linear forwards;
+    animation: storyProgress 10s linear forwards;
 }
 
 @keyframes storyProgress {
