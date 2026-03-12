@@ -333,6 +333,7 @@ const storyData = {
 let currentStoryKey = null;
 let currentSlideIndex = 0;
 let storyTimer = null;
+let isPaused = false;
 const STORY_DURATION = 6000;
 
 function openStory(storyKey) {
@@ -413,7 +414,27 @@ function navigateStory(direction) {
 
 function startStoryTimer() {
     clearInterval(storyTimer);
+    if (isPaused) return;
     storyTimer = setInterval(() => navigateStory(1), STORY_DURATION);
+}
+
+function pauseStory() {
+    isPaused = true;
+    clearInterval(storyTimer);
+    const activeFill = document.querySelector('.story-progress-segment.active .story-progress-segment-fill');
+    if (activeFill) activeFill.style.animationPlayState = 'paused';
+}
+
+function resumeStory() {
+    isPaused = false;
+    const activeFill = document.querySelector('.story-progress-segment.active .story-progress-segment-fill');
+    if (activeFill) {
+        activeFill.style.animationPlayState = 'running';
+        const remainingTime = STORY_DURATION * (1 - activeFill.offsetWidth / activeFill.parentElement.offsetWidth);
+        storyTimer = setInterval(() => navigateStory(1), remainingTime);
+    } else {
+        startStoryTimer();
+    }
 }
 
 function updateToggleIcon() {
@@ -554,6 +575,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document
         .querySelector('.story-nav-next')
         .addEventListener('click', () => navigateStory(1));
+
+    /* Hold to pause listeners */
+    const storyContainer = document.querySelector('.story-modal-container');
+    storyContainer.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.story-nav') || e.target.closest('.story-modal-close')) return;
+        pauseStory();
+    });
+    storyContainer.addEventListener('mouseup', resumeStory);
+    storyContainer.addEventListener('mouseleave', resumeStory);
+    storyContainer.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.story-nav') || e.target.closest('.story-modal-close')) return;
+        pauseStory();
+    }, { passive: true });
+    storyContainer.addEventListener('touchend', resumeStory, { passive: true });
 
     document
         .querySelector('.fab')

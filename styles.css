@@ -1314,17 +1314,17 @@ footer {
     }
 
     .stories-bar {
-        gap: 16px;
-        padding: 16px 0;
+        gap: 12px;
+        padding: 12px 0;
     }
 
     .story-ring {
-        width: 64px;
-        height: 64px;
+        width: 60px;
+        height: 60px;
     }
 
     .story-avatar {
-        font-size: 22px;
+        font-size: 20px;
     }
 }
 
@@ -1415,23 +1415,23 @@ footer {
     }
 
     .stories-bar {
-        gap: 12px;
-        padding: 12px 0;
-        margin-bottom: 12px;
+        gap: 8px;
+        padding: 8px 0;
+        margin-bottom: 8px;
     }
 
     .story-ring {
-        width: 58px;
-        height: 58px;
+        width: 56px;
+        height: 56px;
     }
 
     .story-avatar {
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .story-username {
-        font-size: 11px;
-        max-width: 58px;
+        font-size: 10px;
+        max-width: 56px;
     }
 
     .tab-nav {
@@ -1701,22 +1701,22 @@ footer {
     }
 
     .stories-bar {
-        gap: 8px;
+        gap: 6px;
     }
 
     .story-ring {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
     }
 
     .story-avatar {
-        font-size: 18px;
+        font-size: 16px;
         border-width: 2px;
     }
 
     .story-username {
-        font-size: 10px;
-        max-width: 52px;
+        font-size: 9px;
+        max-width: 48px;
     }
 
     .projects-grid {
@@ -1807,8 +1807,8 @@ footer {
     position: relative;
     width: 420px;
     max-width: 95vw;
-    height: 75vh;
-    max-height: 700px;
+    height: 80vh;
+    max-height: 720px;
     border-radius: 16px;
     overflow: hidden;
     display: flex;
