@@ -565,38 +565,53 @@ document.addEventListener('DOMContentLoaded', () => {
             openStory(item.dataset.story);
         }
     });
-    document
-        .querySelector('.story-modal-close')
-        .addEventListener('click', closeStory);
+    const closeBtn = document.querySelector('.story-modal-close');
+    const navPrev = document.querySelector('.story-nav-prev');
+    const navNext = document.querySelector('.story-nav-next');
+
+    const handleClose = (e) => {
+        if (e.type === 'touchstart') e.preventDefault();
+        closeStory();
+    };
+    const handlePrev = (e) => {
+        if (e.type === 'touchstart') e.preventDefault();
+        navigateStory(-1);
+    };
+    const handleNext = (e) => {
+        if (e.type === 'touchstart') e.preventDefault();
+        navigateStory(1);
+    };
+
+    closeBtn.addEventListener('click', handleClose);
+    closeBtn.addEventListener('touchstart', handleClose, { passive: false });
+    navPrev.addEventListener('click', handlePrev);
+    navPrev.addEventListener('touchstart', handlePrev, { passive: false });
+    navNext.addEventListener('click', handleNext);
+    navNext.addEventListener('touchstart', handleNext, { passive: false });
+
     document
         .querySelector('.story-modal-backdrop')
         .addEventListener('click', closeStory);
-    document
-        .querySelector('.story-nav-prev')
-        .addEventListener('click', () => navigateStory(-1));
-    document
-        .querySelector('.story-nav-next')
-        .addEventListener('click', () => navigateStory(1));
 
     /* Hold to pause listeners */
     const storyContainer = document.querySelector('.story-modal-container');
     
-    const onStart = (e) => {
+    const onHoldStart = (e) => {
         if (e.target.closest('.story-nav') || e.target.closest('.story-modal-close')) return;
+        // Only prevent default on the slide background to allow pausing without scrolling
         if (e.type === 'touchstart') e.preventDefault();
         pauseStory();
     };
 
-    const onEnd = (e) => {
-        if (e.type === 'touchend') e.preventDefault();
+    const onHoldEnd = () => {
         resumeStory();
     };
 
-    storyContainer.addEventListener('mousedown', onStart);
-    storyContainer.addEventListener('mouseup', onEnd);
-    storyContainer.addEventListener('mouseleave', onEnd);
-    storyContainer.addEventListener('touchstart', onStart, { passive: false });
-    storyContainer.addEventListener('touchend', onEnd, { passive: false });
+    storyContainer.addEventListener('mousedown', onHoldStart);
+    storyContainer.addEventListener('mouseup', onHoldEnd);
+    storyContainer.addEventListener('mouseleave', onHoldEnd);
+    storyContainer.addEventListener('touchstart', onHoldStart, { passive: false });
+    storyContainer.addEventListener('touchend', onHoldEnd, { passive: true });
 
     document
         .querySelector('.fab')
