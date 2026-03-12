@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Hold to pause listeners */
     const storyContainer = document.querySelector('.story-modal-container');
-    
+
     const onHoldStart = (e) => {
         if (e.target.closest('.story-nav') || e.target.closest('.story-modal-close')) return;
         // Only prevent default on the slide background to allow pausing without scrolling
@@ -628,6 +628,34 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'ArrowLeft') navigateStory(-1);
         }
     });
+
+    /* ── Dynamic Title Animation ── */
+    const roles = [
+        "Full Stack Developer",
+        "Frontend Expert",
+        "Cloud Certified 3x",
+        "AI Explorer"
+    ];
+    const dynamicTitle = document.getElementById('dynamic-title');
+    let roleIndex = 0;
+
+    if (dynamicTitle) {
+        setInterval(() => {
+            dynamicTitle.classList.add('fade-out');
+
+            setTimeout(() => {
+                roleIndex = (roleIndex + 1) % roles.length;
+                dynamicTitle.textContent = roles[roleIndex];
+                dynamicTitle.classList.remove('fade-out');
+                dynamicTitle.classList.add('fade-in');
+
+                setTimeout(() => {
+                    dynamicTitle.classList.remove('fade-in');
+                }, 500); // Remove fade-in class after animation completes
+            }, 500); // Wait for fade-out to complete before changing text
+        }, 3000); // Change role every 3 seconds
+    }
+
     animateOnScroll();
     let ticking = false;
     window.addEventListener('scroll', () => {
